@@ -65,13 +65,13 @@ class MainViewModel extends BaseViewModel {
     var url = "";
     if (Platform.isMacOS) {
       url =
-          "https://dl.google.com/android/repository/platform-tools-latest-darwin.zip";
+          "https://googledownloads.cn/android/repository/platform-tools-latest-darwin.zip";
     } else if (Platform.isWindows) {
       url =
-          "https://dl.google.com/android/repository/platform-tools-latest-windows.zip";
+          "https://googledownloads.cn/android/repository/platform-tools-latest-windows.zip";
     } else {
       url =
-          "https://dl.google.com/android/repository/platform-tools-latest-linux.zip";
+          "https://googledownloads.cn/android/repository/platform-tools-latest-linux.zip";
     }
     var filePath = downloadPath + "platform-tools-latest.zip";
     var response = await Dio().download(url, filePath);
