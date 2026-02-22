@@ -217,4 +217,31 @@ class MainViewModel extends BaseViewModel {
     selectedIndex = index;
     notifyListeners();
   }
+
+  Future<void> startActiveAdb(BuildContext context) async {
+    await getDeviceList();
+    if (devicesList.isEmpty) {
+      showResultDialog(title: "提示", content: "未连接到手机");
+      return;
+    }
+    DevicesModel? device = devicesList.first;
+    if (devicesList.length > 1) {
+      device = await devicesController.show(
+        context,
+        devicesList,
+        device,
+      );
+    }
+    var result = await execAdb([
+      '-s',
+      device!.id,
+      'tcpip',
+      '5555',
+    ]);
+    if (result?.exitCode == 0) {
+      showResultDialog(title: "提示", content: "ADB激活成功");
+    } else {
+      showResultDialog(title: "提示", content: "ADB激活失败");
+    }
+  }
 }

@@ -5,11 +5,10 @@ import 'package:android_tool/page/flie_manager/file_manager_page.dart';
 import 'package:android_tool/page/main/devices_model.dart';
 import 'package:android_tool/widget/adb_setting_dialog.dart';
 import 'package:android_tool/widget/text_view.dart';
-import 'package:desktop_drop/desktop_drop.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'main_view_model.dart';
 
@@ -29,44 +28,62 @@ class _MainPageState extends BasePage<MainPage, MainViewModel> {
 
   @override
   Widget contentView(BuildContext context) {
-    var select = context.watch<MainViewModel>().selectedIndex;
-    return Row(
-      children: <Widget>[
-        DropTarget(
-          onDragDone: (details) {
-            viewModel.onDragDone(details);
-          },
-          child: Container(
-            color: Colors.blue.withOpacity(0.05),
-            width: 200,
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Image.asset("images/app_icon.png", width: 60, height: 60),
-                devicesView(),
-                const SizedBox(height: 20),
-                // const Divider(height: 1),
-                // _leftItem("images/ic_devices_info.svg", "设备信息", 0),
-                _leftItem("images/ic_quick_future.svg", "快捷功能", 1),
-                _leftItem("images/ic_folder.svg", "文件管理", 2),
-                _leftItem("images/ic_log.svg", "LogCat", 3),
-                _leftItem("images/ic_settings.svg", "设置", 4),
-              ],
+    return Container(
+      alignment: Alignment.center,
+      color: const Color(0xFF292929),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("images/app_logo.png", width: 200, height: 200),
+          const SizedBox(height: 50),
+          Container(
+            width: 300,
+            height: 80,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(15),
+              onTap: () {
+                viewModel.startActiveAdb(context);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: const Color(0xFF666666),
+                ),
+                alignment: Alignment.center,
+                child: const TextView(
+                  "开始激活",
+                  fontSize: 24,
+                  color: Color(0xFFFFFFFF),
+                ),
+              ),
             ),
           ),
-        ),
-        // const VerticalDivider(width: 1),
-        Expanded(
-          child: Column(
-            children: [
-              // packageNameView(context, select),
-              Expanded(
-                child: buildContent(select),
+          const SizedBox(height: 20),
+          Container(
+            width: 300,
+            height: 80,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(15),
+              onTap: () {
+                openBrowser();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: const Color(0xFF666666),
+                ),
+                alignment: Alignment.center,
+                child: const TextView(
+                  "视频教程",
+                  fontSize: 24,
+                  color: Color(0xFFFFFFFF),
+                ),
               ),
-            ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -99,7 +116,7 @@ class _MainPageState extends BasePage<MainPage, MainViewModel> {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
-          viewModel.onLeftItemClick(index);
+          openBrowser();
         },
         child: Container(
           decoration: BoxDecoration(
@@ -138,9 +155,6 @@ class _MainPageState extends BasePage<MainPage, MainViewModel> {
             selector: (context, viewModel) => viewModel.device,
             builder: (context, device, child) {
               return Container(
-                constraints: const BoxConstraints(
-                  maxWidth: 150,
-                ),
                 child: Text(
                   device?.itemTitle ?? "未连接设备",
                   overflow: TextOverflow.visible,
@@ -163,6 +177,18 @@ class _MainPageState extends BasePage<MainPage, MainViewModel> {
         ],
       ),
     );
+  }
+
+  Future<void> openBrowser() async {
+    final Uri url = Uri.parse(
+        "https://www.bilibili.com/video/BV15w4m1v7iA/?share_source=copy_web&vd_source=1e7670b6b13bc4209015ad49d7a01151");
+
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication, // 强制外部浏览器
+    )) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   @override

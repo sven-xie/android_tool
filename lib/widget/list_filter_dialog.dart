@@ -59,7 +59,7 @@ class _ListFilterDialogState<T extends ListFilterItem>
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           width: double.infinity,
                           child: TextView(
-                            widget.title ?? "请选择调试的应用包名",
+                            widget.title ?? "请选择需要激活的手机",
                             fontSize: 17,
                           ),
                         ),
@@ -79,16 +79,6 @@ class _ListFilterDialogState<T extends ListFilterItem>
                       ],
                     ),
                     const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: TextField(
-                        controller: widget.controller.controller,
-                        decoration: InputDecoration(
-                          labelText: widget.tipText ?? '请输入筛选的包名',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                     SelectorListPlus<ListFilterController, ListFilterItem>(
                       builder: (context, value, child) {
                         return SizedBox(
@@ -99,7 +89,7 @@ class _ListFilterDialogState<T extends ListFilterItem>
                               if (value.isEmpty) {
                                 return ListTile(
                                   title: TextView(
-                                    widget.notFoundText ?? "未找到相关包名的应用",
+                                    widget.notFoundText ?? "未连接到手机",
                                     color: Colors.redAccent,
                                   ),
                                 );
@@ -129,10 +119,6 @@ class _ListFilterDialogState<T extends ListFilterItem>
                         );
                       },
                       selector: widget.controller.selectorList,
-                    ),
-                    Offstage(
-                      offstage: !widget.isSelectApp,
-                      child: _buildShowSelectSystemAppView(),
                     ),
                   ],
                 ),
