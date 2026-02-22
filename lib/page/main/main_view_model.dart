@@ -28,11 +28,6 @@ class MainViewModel extends BaseViewModel {
 
   init() async {
     await checkAdb();
-    if (adbPath.isNotEmpty) {
-      await getDeviceList();
-      selectedIndex = 1;
-      notifyListeners();
-    }
   }
 
   /// 获取adb路径
@@ -56,7 +51,7 @@ class MainViewModel extends BaseViewModel {
 
   /// 下载adb文件
   Future<String> downloadAdb() async {
-    setLoading(true, text: "下载adb文件中...");
+    setLoading(true, text: "下载ADB激活插件中...");
     var directory = await getTemporaryDirectory();
     var downloadPath = directory.path +
         Platform.pathSeparator +
@@ -219,6 +214,11 @@ class MainViewModel extends BaseViewModel {
   }
 
   Future<void> startActiveAdb(BuildContext context) async {
+    await checkAdb();
+    if (adbPath.isEmpty) {
+      showResultDialog(title: "提示", content: "请先下载ADB激活插件");
+      return;
+    }
     await getDeviceList();
     if (devicesList.isEmpty) {
       showResultDialog(title: "提示", content: "未连接到手机");
