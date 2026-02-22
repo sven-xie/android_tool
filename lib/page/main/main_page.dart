@@ -28,62 +28,96 @@ class _MainPageState extends BasePage<MainPage, MainViewModel> {
 
   @override
   Widget contentView(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      color: const Color(0xFF292929),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset("images/app_logo.png", width: 200, height: 200),
-          const SizedBox(height: 50),
-          Container(
-            width: 300,
-            height: 80,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(15),
-              onTap: () {
-                viewModel.startActiveAdb(context);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: const Color(0xFF666666),
-                ),
-                alignment: Alignment.center,
-                child: const TextView(
-                  "开始激活",
-                  fontSize: 24,
-                  color: Color(0xFFFFFFFF),
+    return Stack(
+      children: [
+        Container(
+          color: const Color(0xFF292929),
+          width: double.infinity, // 确保占满宽度
+          height: double.infinity, // 确保占满高度
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // --- 顶部及中间部分 ---
+              const SizedBox(height: 50), // 距离顶部 50
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20), // 设置圆角弧度
+                child: Image.asset(
+                  "images/app_logo.png",
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover, // 确保图片填充并裁剪，防止变形
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            width: 300,
-            height: 80,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(15),
-              onTap: () {
-                openBrowser();
-              },
-              child: Container(
-                decoration: BoxDecoration(
+              const SizedBox(height: 30),
+
+              // “开始激活” 按钮
+              SizedBox(
+                width: 400,
+                height: 80,
+                child: InkWell(
                   borderRadius: BorderRadius.circular(15),
-                  color: const Color(0xFF666666),
-                ),
-                alignment: Alignment.center,
-                child: const TextView(
-                  "视频教程",
-                  fontSize: 24,
-                  color: Color(0xFFFFFFFF),
+                  onTap: () => viewModel.startActiveAdb(context),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: const Color(0xFF666666),
+                    ),
+                    alignment: Alignment.center,
+                    child: const TextView(
+                      "开始激活",
+                      fontSize: 24,
+                      color: Color(0xFFFFFFFF),
+                    ),
+                  ),
                 ),
               ),
-            ),
+
+              const SizedBox(height: 30),
+
+              // 教程文本部分
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextView("教程", fontSize: 16, color: Color(0xFFFFFFFF)),
+                    SizedBox(height: 10),
+                    TextView("1、手机开启开发者选项和USB调试；",
+                        fontSize: 14, color: Color(0xFFFFFFFF)),
+                    SizedBox(height: 3),
+                    TextView("2、USB数据线连接手机和电脑；手机选择“文件传输”模式；",
+                        fontSize: 14, color: Color(0xFFFFFFFF)),
+                    SizedBox(height: 3),
+                    TextView("3、点击“开始激活”按钮；",
+                        fontSize: 14, color: Color(0xFFFFFFFF)),
+                  ],
+                ),
+              ),
+
+              // --- 核心改动：撑开中间剩余空间 ---
+              const Spacer(),
+
+              // --- 底部版权部分 ---
+              const Column(
+                children: [
+                  TextView(
+                    "用于《飞鸽远程控制》、《车机投屏宝》APP的手机ADB服务激活",
+                    fontSize: 14,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                  SizedBox(height: 5),
+                  TextView(
+                    "Copyright © 厦门松山排科技有限公司版权所有",
+                    fontSize: 11,
+                    color: Color(0x99FFFFFF),
+                  ),
+                  SizedBox(height: 10), // 距离屏幕最底部留一点间距
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
