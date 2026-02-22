@@ -13,16 +13,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 优化 1: 缓存 Flutter 依赖，大幅提升二次构建速度
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool/
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          cache: true # 开启 flutter-action 自带的缓存
 
-      - name: Flutter Doctor
-        run: flutter doctor
-
-      - name: Enable Windows Desktop
-        run: flutter config --enable-windows-desktop
+      # 优化 2: 移除 doctor 和 config（Windows-latest 默认已启用 Windows 支持）
+      # 只在调试时需要 flutter doctor
 
       - name: Get Dependencies
         run: flutter pub get
@@ -30,8 +39,14 @@ jobs:
       - name: Build Windows Release
         run: flutter build windows --release
 
+      # 优化 3: 修正路径并过滤无用文件
+      # Flutter 3.x 路径通常为 build/windows/x64/runner/Release/
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-release
-          path: build/windows/runner/Release/**
+          name: windows-app-release
+          path: |
+            build/windows/x64/runner/Release/*.exe
+            build/windows/x64/runner/Release/*.dll
+            build/windows/x64/runner/Release/data/
+          if-no-files-found: error # 如果没找到文件直接报错提醒
